@@ -23,3 +23,8 @@ const API_URL = "https://xxxx.trycloudflare.com/generate";
 
 6.运行
 确保上述操作正常运行后，点开 new_year_web 文件夹中的 backend 文件夹，运行 main.py
+
+7.之后就可以通过网页进行访问啦~
+
+# 注意
+该模型很小，所以生成的祝福词是不连贯且问题很多（发给亲友可能被打）
