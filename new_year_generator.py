@@ -81,7 +81,7 @@ for epoch in range(epochs):
         total_loss = total_loss + loss.item()
     if (epoch + 1) % 20 == 0:  # 每20轮打印一次损失
         print(f"Epoch {epoch + 1}/{epochs}, Loss: {total_loss / len(dataloader):.4f}")
-# 保存模型（可选，下次直接加载不用再训练）
+# 保存模型
 torch.save(model.state_dict(), "new_year_web/backend/new_year_model.pth")
 
 # 4.生成祝福语
@@ -102,7 +102,7 @@ def generate_greeting(start_char, max_len=20):
 
             x = torch.LongTensor(input_seq).reshape(1, -1).to(device)  # 移除最后一个1
             output, hidden = model(x, hidden)
-            # 随机选择（避免每次生成完全一样，temperature调随机性）
+            # 随机选择
             output = output / 0.8
             pred_idx = torch.multinomial(torch.softmax(output, dim=1), num_samples=1).item()
             pred_char = idx2char[pred_idx]
@@ -111,11 +111,12 @@ def generate_greeting(start_char, max_len=20):
             input_seq.append(pred_idx)
             if len(input_seq) > seq_len:
                 input_seq = input_seq[1:]
-            # 遇到句号/逗号停止（可选）
+            # 遇到句号/逗号停止
             if pred_char in ["。", "，"] and len(greeting) > 5:
                 break
     return greeting
 # 测试生成：输入不同开头字
 print("生成结果：")
 for start in ["新", "春", "阖", "龙"]:
+
     print(generate_greeting(start))
