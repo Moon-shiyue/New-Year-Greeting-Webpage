@@ -1,0 +1,205 @@
+
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新年祝福生成器</title>
+    <style>
+        /* 全局样式，新年红色主题 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", "宋体", sans-serif;
+        }
+        body {
+            background-color: #fdf2f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.1);
+            padding: 40px 30px;
+            text-align: center;
+            border: 2px solid #ff4d4f;
+        }
+        .title {
+            color: #d9363e;
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+        /* 祝福显示框 */
+        .greeting-box {
+            width: 100%;
+            min-height: 120px;
+            line-height: 2;
+            font-size: 20px;
+            color: #333;
+            padding: 20px;
+            border: 1px solid #ffcccc;
+            border-radius: 10px;
+            background-color: #fff5f5;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-wrap: break-word;
+        }
+        /* 按钮样式 */
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        .generate-btn {
+            background-color: #ff4d4f;
+            color: #fff;
+        }
+        .generate-btn:hover {
+            background-color: #d9363e;
+            transform: scale(1.05);
+        }
+        .copy-btn {
+            background-color: #fff;
+            color: #ff4d4f;
+            border: 1px solid #ff4d4f;
+        }
+        .copy-btn:hover {
+            background-color: #fff5f5;
+            transform: scale(1.05);
+        }
+        /* 提示语样式 */
+        .tip {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #999;
+        }
+        .success-tip {
+            color: #52c41a;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+        }
+        /* 手机适配 */
+        @media (max-width: 400px) {
+            .title {
+                font-size: 26px;
+            }
+            .greeting-box {
+                font-size: 18px;
+            }
+            .btn {
+                padding: 10px 20px;
+                font-size: 16px;
+                margin: 5px;
+            }
+            .btn-group {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">新年祝福生成器</h1>
+        <p class="subtitle">点击生成专属新年祝福，一键复制使用</p>
+        <!-- 祝福显示框 -->
+        <div class="greeting-box" id="greetingBox">点击下方按钮生成新年祝福吧～</div>
+        <!-- 成功提示 -->
+        <p class="success-tip" id="successTip">✅ 复制成功！可直接粘贴到微信/短信</p>
+        <!-- 按钮组 -->
+        <div class="btn-group">
+            <button class="btn generate-btn" id="generateBtn">生成新年祝福</button>
+            <button class="btn copy-btn" id="copyBtn">复制祝福</button>
+        </div>
+        <p class="tip">每次生成随机开头，祝福语由AI模型自动创作</p>
+    </div>
+
+    <script>
+        // 后端接口地址（本地后端地址，端口和main.py中的port一致）
+        const API_URL = "https://pipe-editor-highland-priority.trycloudflare.com/generate";
+        // 获取页面元素
+        const generateBtn = document.getElementById("generateBtn");
+        const copyBtn = document.getElementById("copyBtn");
+        const greetingBox = document.getElementById("greetingBox");
+        const successTip = document.getElementById("successTip");
+
+ // 生成祝福按钮点击事件
+generateBtn.addEventListener("click", async () => {
+    greetingBox.innerText = "生成中...";
+    successTip.style.display = "none";
+    generateBtn.disabled = true;
+
+    try {
+        const response = await fetch(API_URL, {
+            method: "GET",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+
+            }
+        });
+
+        // 先判断响应是否正常
+        if (!response.ok) {
+            throw new Error(`接口响应异常，状态码：${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // 匹配后端返回的字段
+        if (data.code === 200 && data.greeting) {
+            greetingBox.innerText = data.greeting;
+        } else {
+            greetingBox.innerText = `生成失败：${data.msg || "未知错误"}`;
+        }
+    } catch (error) {
+        greetingBox.innerText = "接口连接失败，请检查cloudflared和后端是否正常运行～";
+        console.error("生成错误详情：", error);
+    } finally {
+        generateBtn.disabled = false;
+    }
+});
+        // 复制祝福按钮点击事件
+        copyBtn.addEventListener("click", () => {
+            const greeting = greetingBox.innerText;
+            if (greeting === "点击下方按钮生成新年祝福吧～" || greeting === "生成中...") {
+                alert("请先生成祝福语再复制！");
+                return;
+            }
+            // 复制到剪贴板
+            navigator.clipboard.writeText(greeting).then(() => {
+                successTip.style.display = "block";
+                // 3秒后隐藏提示
+                setTimeout(() => {
+                    successTip.style.display = "none";
+                }, 3000);
+            }).catch(() => {
+                alert("复制失败，请手动复制！");
+            });
+        });
+    </script>
+</body>
+</html>
