@@ -6,14 +6,16 @@
 先通过new_year_generator.py文件生成训练模型（当然，也可以直接用文件夹里训练好的）
 
 2.安装 cloudflared
-Windows：下载 https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe，重命名为 cloudflared.exe
+Windows：下载 https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe
+重命名为 cloudflared.exe
 
 3.将下载的cloudflared通过终端打开
 终端进入 cloudflared.exe 所在目录，执行
 cloudflared.exe tunnel --url http://localhost:8000
 
 4.获取公网地址
-终端输出类似 https://xxxx.trycloudflare.com，复制该地址
+终端输出类似 https://xxxx.trycloudflare.com
+复制该地址
 
 5.更新前端 API_URL
 修改 frontend 文件夹index.html 中：
