@@ -1,7 +1,7 @@
 # New-Year-Greeting-Webpage
 通过AI写的一个小的新年祝福网页
 
-
+# 使用流程
 1.生成模型
 先通过new_year_generator.py文件生成训练模型（当然，也可以直接用文件夹里训练好的）
 
